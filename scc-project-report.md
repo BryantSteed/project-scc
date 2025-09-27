@@ -4,7 +4,9 @@
 
 ### Design Experience
 
-*Fill me in*
+For prepost, which returns the pre and post order numbers of every node in its contituent tree map, I will define a function that iterates through the graph and calles the recursive function explore on each one; the same way that the psuedocode works. Because python dictionaries preserve insertion order, I will make another dictionary to keep track of whether they've been visited, the key will be the string of the node in the dictionary and the value a bool variable.
+
+With that, I will simply store the pre and post order numbers in the dictionary that I will eventually return.
 
 ### Theoretical Analysis - Pre/Post Order Traversal
 
@@ -75,7 +77,9 @@
 
 ### Design Experience
 
-*Fill me in*
+I will reverse the graph given to me by iterating through the adjacency list and setting each edge that is connected to by another node to be connected to by that respective node. I will do this by iterating through the graph and creating another graph to do this during the iteration.
+
+After running prepost on the reverse graph, I will iterate through the pre post trees and sort them based on their post order number. Then, I will run interate in the decreasing post order numbr order and run explore succesively, popping out each SCC and adding each SCC set to the list. I will then return that list.
 
 ### Theoretical Analysis - SCC
 
@@ -143,7 +147,9 @@
 
 ### Design Experience
 
-*Fill me in*
+To identify the different types of edges, I will first run prepost on the graph. I will likely need to reorganize the tree data into a cohesive dictionary that will actually get me all the prepost numbers in one call. Then I will iterate through each edge in the graph by iterating through the key and invidually connections. For each of those edges, I will construct a list that orders the pre-post numbers in order and has the identity of the node it belongs to and whether that number is a pre or post order.
+
+I will then iterate through that list to determine if the pattern in [u[v v]u], in which case its tree/forward, [v[u u]v], in which case its back, or finally [v v] [u u], in which case it's cross.
 
 ### Articulation Points Discussion 
 
@@ -153,7 +159,11 @@
 
 ### Design Experience
 
-*Fill me in*
+I found a dataset from a harvard study that has supreme court decisions and how often they have cited eachother. They said in their readme that the data took a long time to collect. It has like 30,288 supreme court decisions in it. This is the link to it https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/XMBQL6. There are hundreds of thousands of edges here, and they give the whole adjacency list in allcites.txt. 
+
+An edge from case1 -> case2 means that case1 has cited case2 in their opinion. This also means that its imposible for cases to cite eachother. I dont think that the strongly connected components will be very big because you cant have a previous case cite a case that happens after. This will be interesting to see if any cycles do actually exist in the data set. If I get any SCCS of more than one node, that would be very interesting. But my guess is that this dataset is a true DAG.
+
+I may need to adapt the dataset and make it smaller for my algorithm because its really big. The whole folder is liek 100MB, so I don't know how my computer will be able to handle that. As far as me interpreting my results, if the data shows that its not a DAG, it would show that the data is incorrect or has some discrepancy. Or it could show that time travel was possible in the 1800's (quite the finding on its own).
 
 ### Dataset Description
 
