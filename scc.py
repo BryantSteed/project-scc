@@ -12,7 +12,36 @@ def prepost(graph: GRAPH) -> list[dict[str, list[int]]]:
     Each tree is a dict mapping each node label to a list of [pre, post] order numbers.
     The graph should be searched in order of the keys in the dictionary.
     """
-    return []
+    visited: set[str] = set()
+    sort_func: callable = get_sort_func(graph)
+    trees: list[dict[str, list[int]]] = []
+    order_counter = 1
+    for node in graph:
+        if not node in visited:
+            tree: dict[str, list[int]] = {}
+            order_counter = explore_tree(graph, visited, sort_func, tree, node, order_counter)
+            trees.append(tree)
+    return trees
+
+def explore_tree(graph, visited, sort_func, tree, node, order_counter):
+    visited.add(node)
+    tree[node] = [order_counter]
+    order_counter += 1
+    candidates = sorted(graph[node], key=sort_func)
+    for candidate in candidates:
+        if not candidate in visited:
+            order_counter = explore_tree(graph, visited, sort_func, tree, candidate, order_counter)
+    tree[node].append(order_counter)
+    order_counter += 1
+    return order_counter
+
+def get_sort_func(graph: GRAPH):
+    sort_dict: dict[str, int] = {}
+    for i, node in enumerate(graph):
+        sort_dict[node] = i
+    def sorting_func(node: str):
+        return sort_dict[node]
+    return sorting_func
 
 
 def find_sccs(graph: GRAPH) -> list[set[str]]:
