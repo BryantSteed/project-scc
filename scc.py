@@ -49,7 +49,49 @@ def find_sccs(graph: GRAPH) -> list[set[str]]:
     Return a list of the strongly connected components in the graph.
     The list should be returned in order of sink-to-source
     """
-    return []
+    reverse_graph = get_reverse_graph(graph)
+    prepost_trees = prepost(reverse_graph)
+    node_order = get_node_order(prepost_trees)
+    visited = set()
+    sort_func = get_sort_func(graph)
+    sccs = []
+    for node in node_order:
+        if not node in visited:
+            scc = explore_primitive(graph, visited, sort_func, node, set())
+            sccs.append(scc)
+    return sccs
+
+def explore_primitive(graph, visited, sort_func, node, scc):
+    """Mine. all this does is explore all it can and returns everything
+    that could be reached from the starting node. It doesnt worry about
+    pre or post"""
+    visited.add(node)
+    scc.add(node)
+    adjacents = sorted(graph[node], key = sort_func)
+    for adjacent in adjacents:
+        if not adjacent in visited:
+            scc = explore_primitive(graph, visited, sort_func, adjacent, scc)
+    return scc
+
+
+
+
+def get_node_order(prepost_trees: list[dict[str, list[int]]]):
+    node_post_orders: list[tuple[str, int]] = []
+    for tree in prepost_trees:
+        for node, orders in tree.items():
+            node_post_orders.append((node, orders[1]))
+    node_post_orders.sort(key = lambda t : t[1], reverse=True)
+    node_order = [node_tuple[0] for node_tuple in node_post_orders]
+    return node_order
+
+
+def get_reverse_graph(graph: GRAPH):
+    reverse_graph = {node : [] for node in graph}
+    for from_node, to_nodes in graph.items():
+        for to_node in to_nodes:
+            reverse_graph[to_node].append(from_node)
+    return reverse_graph
 
 
 def classify_edges(graph: GRAPH, trees: list[dict[str, list[int]]]) -> dict[str, set[tuple[str, str]]]:
