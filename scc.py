@@ -103,7 +103,22 @@ def classify_edges(graph: GRAPH, trees: list[dict[str, list[int]]]) -> dict[str,
         'back': set(),
         'cross': set()
     }
-
+    for u, v in edge_iterator(graph):
+        u_pre, u_post, v_pre, v_post = None, None, None, None
+        for tree in trees:
+            if u in tree:
+                u_pre, u_post = tuple(tree[u])
+            if v in tree:
+                v_pre, v_post = tuple(tree[v])
+        if u_pre < v_pre < v_post < u_post:
+            classification['tree/forward'].add((u,v))
+        elif v_pre < u_pre < u_post < v_post:
+            classification['back'].add((u,v))
+        else:
+            classification['cross'].add((u,v))
     return classification
 
-
+def edge_iterator(graph: GRAPH):
+    for from_node, to_nodes in graph.items():
+        for to_node in to_nodes:
+            yield (from_node, to_node)
