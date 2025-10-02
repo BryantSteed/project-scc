@@ -14,11 +14,117 @@ With that, I will simply store the pre and post order numbers in the dictionary 
 
 #### Time 
 
-*Fill me in*
+##### prepost - **O(V + E)**
+
+```py
+def prepost(graph: GRAPH) -> list[dict[str, list[int]]]:
+    """
+    Return a list of DFS trees.
+    Each tree is a dict mapping each node label to a list of [pre, post] order numbers.
+    The graph should be searched in order of the keys in the dictionary.
+    """
+    visited: set[str] = set()
+    sort_func: callable = get_sort_func(graph) # O(V)
+    trees: list[dict[str, list[int]]] = []
+    order_counter = 1
+    for node in graph:    # O(V)
+        if not node in visited:   # condition 1
+            tree: dict[str, list[int]] = {}
+            order_counter = explore_tree(graph, visited, sort_func, tree, node, order_counter)
+            trees.append(tree)
+    return trees
+```
+
+The outer part of this for loop runs V times because it iterates through each vertex of the graph. However, it doesn't always perform the same computation depending on whether the Node has been visited or not see condition 1.
+
+```py
+def explore_tree(graph, visited, sort_func, tree, node, order_counter):
+    visited.add(node)
+    tree[node] = [order_counter]
+    order_counter += 1 # O(1)
+    candidates = sorted(graph[node], key=sort_func) # O(E)
+    for candidate in candidates: # O(V)
+        if not candidate in visited: # condition 2
+            order_counter = explore_tree(graph, visited, sort_func, tree, candidate, order_counter)
+    tree[node].append(order_counter)
+    order_counter += 1 # O(1)
+    return order_counter
+```
+
+This function is a little difficult to annotate specifically so I'll explain. This function explore tree gets a list of candidate nodes to explore, but it doesn't need to explore all of them if they are already visited (see condition 2). The worst case here is that in the single explore function, you would have all the edges, which would mean O(E).
+
+The other worst case is that you would have all the node, which would be O(V).
+
+```py
+def get_sort_func(graph: GRAPH):
+    sort_dict: dict[str, int] = {}
+    for i, node in enumerate(graph):
+        sort_dict[node] = i
+    def sorting_func(node: str):
+        return sort_dict[node]
+    return sorting_func
+```
+
+The get_sort_func function is a quite negligible O(V) as you can see because it simply iterates through the vertices of the graph and preserve that order in a map.
+
+If you really think about it, because were not having to perform additional computations if a given node has already been visited (and this applies both for the prepost function and the explore function), you will visit a maximum of V vertices and E edges. Even though the recursive structure and for loops from prepost make it look nesting like (V * E), its actually not because you wouldn't even iterate over the V's that have already been visited. Also, E's that lead to an already visited node will not be taken in to account.
+
+For this reason my theoretical time complexity for prepost is **O(V + E)**, which is linear time.
 
 #### Space
 
-*Fill me in*
+##### prepost - **O(V + E)**
+
+```py
+def get_sort_func(graph: GRAPH):
+    sort_dict: dict[str, int] = {}
+    for i, node in enumerate(graph):
+        sort_dict[node] = i
+    def sorting_func(node: str):
+        return sort_dict[node] # O(2E)
+    return sorting_func
+```
+
+My sorting function stores a dictionary with V vertices in it. So O(2E) space there (because of the integer value stored).
+
+```py
+def prepost(graph: GRAPH) -> list[dict[str, list[int]]]:
+    """
+    Return a list of DFS trees.
+    Each tree is a dict mapping each node label to a list of [pre, post] order numbers.
+    The graph should be searched in order of the keys in the dictionary.
+    """
+    visited: set[str] = set() # O(V)
+    sort_func: callable = get_sort_func(graph)
+    trees: list[dict[str, list[int]]] = []
+    order_counter = 1
+    for node in graph:
+        if not node in visited:
+            tree: dict[str, list[int]] = {}
+            order_counter = explore_tree(graph, visited, sort_func, tree, node, order_counter)
+            trees.append(tree) #O(V)
+    return trees
+```
+
+The graph here takes up O(V + E) space because it stores V vertices as keys and E edges as values. The visited set at the end store V vertices for O(V). Any local variables from the for loop are garbage collected each iteration such that they dont accumulate. Each tree has a maximum of V vertices for O(V). This is also the case with the list of trees because the trees partition that list.
+
+```py
+def explore_tree(graph, visited, sort_func, tree, node, order_counter):
+    visited.add(node)
+    tree[node] = [order_counter]
+    order_counter += 1 #O(1)
+    candidates = sorted(graph[node], key=sort_func) # O(E)
+    for candidate in candidates:
+        if not candidate in visited:
+            order_counter = explore_tree(graph, visited, sort_func, tree, candidate, order_counter)
+    tree[node].append(order_counter)
+    order_counter += 1
+    return order_counter
+```
+
+The size of the counter is negligible so I say O(1) for that. The candidates list grows to be at most E big, so O(E) there. Of course visited could be at most O(V).
+
+In final consideration. I add up all the constituent time complexities, recognizing that the for loop of prepost garbage collects each time, and get O(3V + 3E + 2) or **O(V + E)**.
 
 ### Empirical Data
 
@@ -63,7 +169,7 @@ With that, I will simply store the pre and post order numbers in the dictionary 
 
 ### Comparison of Theoretical and Empirical Results
 
-- Theoretical order of growth: *copy from section above* 
+- Theoretical order of growth: **O(V + E)** 
 - Measured constant of proportionality for theoretical order: 
 
 ![img](img.png)
@@ -89,11 +195,142 @@ After running prepost on the reverse graph, I will iterate through the pre post 
 
 #### Time 
 
-*Fill me in*
+##### find_sccs - **O(V log V)**
+
+```py
+def find_sccs(graph: GRAPH) -> list[set[str]]:
+    """
+    Return a list of the strongly connected components in the graph.
+    The list should be returned in order of sink-to-source
+    """
+    reverse_graph = get_reverse_graph(graph)
+    prepost_trees = prepost(reverse_graph)
+    node_order = get_node_order(prepost_trees)
+    visited = set()
+    sort_func = get_sort_func(graph)
+    sccs = []
+    # Section Below Here
+    for node in node_order: #O(V)
+        if not node in visited: # condition A
+            scc = explore_primitive(graph, visited, sort_func, node, set()) #O(E)
+            sccs.append(scc)
+    return sccs
+```
+
+I'll comentate on the section below. The top level for loop here iterates a maximum of V times, but as in prepost, this is misleading because it doesn't do hardly any computation. In reality, it only will call explore primitive a maximum of V times if all the components are strongly connected. Because of this, the loop itself gets an O(V). In terms of this, that whole lower section would be O(V + E) becase its effetively the same as the prepost traversal.
+
+
+```py
+def explore_primitive(graph, visited, sort_func, node, scc):
+    """Mine. all this does is explore all it can and returns everything
+    that could be reached from the starting node. It doesnt worry about
+    pre or post"""
+    visited.add(node)
+    scc.add(node)
+    adjacents = sorted(graph[node], key = sort_func) #O(E) if there are E adjacents max
+    for adjacent in adjacents: # O(E)
+        if not adjacent in visited: # Condition B
+            scc = explore_primitive(graph, visited, sort_func, adjacent, scc)
+    return scc
+```
+
+This pops out SCCs. The maximum number of adjacents here is how many edges there all in the graph (assuming every edges leads from this one node). However, it doesn't compute through every adjacent if its been visited, but even the time in this loop consideration is significant because there isn't as much overhead with counting like in prepost. This means that explore_primitive will have a worst case of traversing E edges for O(E). This assumes that the whole graph is one SCC or there are are unreachable SCCs.
+
+```py
+def get_node_order(prepost_trees: list[dict[str, list[int]]]):
+    node_post_orders: list[tuple[str, int]] = []
+    for tree in prepost_trees:
+        for node, orders in tree.items(): # O(V)
+            node_post_orders.append((node, orders[1])) #O(1)
+    node_post_orders.sort(key = lambda t : t[1], reverse=True) #O(V log V)
+    node_order = [node_tuple[0] for node_tuple in node_post_orders] # O(V)
+    return node_order
+```
+
+The double nested for loops are misleading because really whats happening is that the function is iterating through all the edges of the graph. It just has to go through trees to get there. adding the node post orders is simply constant as seen above. Sorting the post orders is O(V log V). This is assuming that the sorting methodology is fully optimized.
+
+```py
+def get_reverse_graph(graph: GRAPH):
+    reverse_graph = {node : [] for node in graph}
+    for from_node, to_nodes in graph.items():
+        for to_node in to_nodes: #O(E)
+            reverse_graph[to_node].append(from_node) #O(1)
+    return reverse_graph
+```
+
+There's nothing special about this hear, you effectively iterate through each edge and reverse it, which is constant. So this fucntion is just O(E)
+
+Adding up all the functions in order O(3V + 4E + V log V + 1) = O(V log V). The main overhead here is sorting all the vertices.
 
 #### Space
 
-*Fill me in*
+##### find_sccs - **O(V + E)**
+
+```py
+def find_sccs(graph: GRAPH) -> list[set[str]]:
+    """
+    Return a list of the strongly connected components in the graph.
+    The list should be returned in order of sink-to-source
+    """
+    reverse_graph = get_reverse_graph(graph) # O(V + E) V nodes and E edges
+    prepost_trees = prepost(reverse_graph) # O(V) V pre and post numbers
+    node_order = get_node_order(prepost_trees) # (V) V nodes
+    visited = set() # O(V)
+    sort_func = get_sort_func(graph) # O(V)
+    sccs = []
+    for node in node_order:
+        if not node in visited:
+            scc = explore_primitive(graph, visited, sort_func, node, set())
+            sccs.append(scc)
+    return sccs # O(V) V nodes
+```
+
+The data structures here are pretty self explanatory here. See the comments.
+
+```py
+def explore_primitive(graph, visited, sort_func, node, scc):
+    """Mine. all this does is explore all it can and returns everything
+    that could be reached from the starting node. It doesnt worry about
+    pre or post"""
+    visited.add(node)
+    scc.add(node)
+    adjacents = sorted(graph[node], key = sort_func)
+    for adjacent in adjacents: # O(E)
+        if not adjacent in visited:
+            scc = explore_primitive(graph, visited, sort_func, adjacent, scc)
+    return scc
+```
+
+The data structures here are the same as in the other function so I wont include them becuase they're mutable. The only thing is the adjacents list which is O(E)
+
+
+```py
+def get_node_order(prepost_trees: list[dict[str, list[int]]]):
+    node_post_orders: list[tuple[str, int]] = []
+    for tree in prepost_trees: # already included the prepost trees above
+        for node, orders in tree.items():
+            node_post_orders.append((node, orders[1]))
+    node_post_orders.sort(key = lambda t : t[1], reverse=True)
+    node_order = [node_tuple[0] for node_tuple in node_post_orders]
+    return node_order
+```
+
+I already included the space of the node post orders in the first function. This function does not grow to be bigger.
+
+```py
+def get_reverse_graph(graph: GRAPH):
+    reverse_graph = {node : [] for node in graph}
+    for from_node, to_nodes in graph.items():
+        for to_node in to_nodes:
+            reverse_graph[to_node].append(from_node)
+    return reverse_graph # already done above
+```
+
+This is just the same as a regualar graph and I have done it in the above function.
+
+The main data structure here is the graph itslef, which is O(V + E) because it stores V nodes and E edges. The rest is quite negligible and only as on constant factors to these.
+
+So, I conclude that finding the sccs is **O(V + E)** space.
 
 ### Empirical Data
 
