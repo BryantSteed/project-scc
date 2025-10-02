@@ -128,43 +128,48 @@ In final consideration. I add up all the constituent time complexities, recogniz
 
 ### Empirical Data
 
-| density factor | size  | V | E | runtime |
-|----------------|-------|---|---|---------|
-| 0.25           | 10    |   |   |         |
-| 0.25           | 20    |   |   |         |
-| 0.25           | 100   |   |   |         |
-| 0.25           | 200   |   |   |         |
-| 0.25           | 1000  |   |   |         |
-| 0.25           | 2000  |   |   |         |
-| 0.25           | 10000 |   |   |         |
-| 0.5            | 10    |   |   |         |
-| 0.5            | 20    |   |   |         |
-| 0.5            | 100   |   |   |         |
-| 0.5            | 200   |   |   |         |
-| 0.5            | 1000  |   |   |         |
-| 0.5            | 2000  |   |   |         |
-| 0.5            | 10000 |   |   |         |
-| 1              | 10    |   |   |         |
-| 1              | 20    |   |   |         |
-| 1              | 100   |   |   |         |
-| 1              | 200   |   |   |         |
-| 1              | 1000  |   |   |         |
-| 1              | 2000  |   |   |         |
-| 1              | 10000 |   |   |         |
-| 2              | 10    |   |   |         |
-| 2              | 20    |   |   |         |
-| 2              | 100   |   |   |         |
-| 2              | 200   |   |   |         |
-| 2              | 1000  |   |   |         |
-| 2              | 2000  |   |   |         |
-| 2              | 10000 |   |   |         |
-| 3              | 10    |   |   |         |
-| 3              | 20    |   |   |         |
-| 3              | 100   |   |   |         |
-| 3              | 200   |   |   |         |
-| 3              | 1000  |   |   |         |
-| 3              | 2000  |   |   |         |
-| 3              | 10000 |   |   |         |
+| Density Factor | Size  |    V    |    E    | Time (sec) |
+| -------------- | ----- | ------- | ------- | ---------- |
+| 0.25           | 10    | 10.0    | 12.8    | 0.0        |
+| 0.25           | 50    | 50.0    | 61.6    | 0.0        |
+| 0.25           | 100   | 100.0   | 123.5   | 0.0        |
+| 0.25           | 500   | 500.0   | 616.1   | 0.001      |
+| 0.25           | 1000  | 1000.0  | 1242.3  | 0.002      |
+| 0.25           | 2000  | 2000.0  | 2496.5  | 0.002      |
+| 0.25           | 4000  | 4000.0  | 4982.6  | 0.005      |
+| 0.25           | 8000  | 8000.0  | 9967.0  | 0.011      |
+| 0.5            | 10    | 10.0    | 17.7    | 0.0        |
+| 0.5            | 50    | 50.0    | 85.2    | 0.0        |
+| 0.5            | 100   | 100.0   | 173.1   | 0.0        |
+| 0.5            | 500   | 500.0   | 872.2   | 0.001      |
+| 0.5            | 1000  | 1000.0  | 1770.4  | 0.002      |
+| 0.5            | 2000  | 2000.0  | 3551.4  | 0.004      |
+| 0.5            | 4000  | 4000.0  | 7147.2  | 0.005      |
+| 0.5            | 8000  | 8000.0  | 14361.9 | 0.012      |
+| 1              | 10    | 10.0    | 24.5    | 0.0        |
+| 1              | 50    | 50.0    | 134.1   | 0.0        |
+| 1              | 100   | 100.0   | 272.5   | 0.0        |
+| 1              | 500   | 500.0   | 1429.5  | 0.001      |
+| 1              | 1000  | 1000.0  | 2921.5  | 0.002      |
+| 1              | 2000  | 2000.0  | 5928.1  | 0.003      |
+| 1              | 4000  | 4000.0  | 12010.6 | 0.007      |
+| 1              | 8000  | 8000.0  | 24327.1 | 0.015      |
+| 2              | 10    | 10.0    | 36.1    | 0.0        |
+| 2              | 50    | 50.0    | 239.4   | 0.0        |
+| 2              | 100   | 100.0   | 499.2   | 0.0        |
+| 2              | 500   | 500.0   | 2710.2  | 0.001      |
+| 2              | 1000  | 1000.0  | 5589.5  | 0.002      |
+| 2              | 2000  | 2000.0  | 11450.9 | 0.004      |
+| 2              | 4000  | 4000.0  | 23462.8 | 0.01       |
+| 2              | 8000  | 8000.0  | 47740.4 | 0.021      |
+| 3              | 10    | 10.0    | 46.0    | 0.0        |
+| 3              | 50    | 50.0    | 356.9   | 0.0        |
+| 3              | 100   | 100.0   | 766.3   | 0.0        |
+| 3              | 500   | 500.0   | 4321.3  | 0.001      |
+| 3              | 1000  | 1000.0  | 8788.2  | 0.003      |
+| 3              | 2000  | 2000.0  | 17810.6 | 0.006      |
+| 3              | 4000  | 4000.0  | 36212.5 | 0.012      |
+| 3              | 8000  | 8000.0  | 73442.4 | 0.027      |
 
 
 ### Comparison of Theoretical and Empirical Results
@@ -396,7 +401,15 @@ I will then iterate through that list to determine if the pattern in [u[v v]u], 
 
 ### Articulation Points Discussion 
 
-*Fill me in*
+An articulation point on a graph that bisects different sub trees of the dfs tree. It's the root of those subtrees. The important thing here is that there are no edges connecting the subtrees and there are forward edges that reach from before the point to after the point (into any of the subtrees). What this means is that in order to get to any node in either of the subtress, you MUST go through that articulation point. This has several applications.
+
+#### **Supply Chain Dependency Graph Example**
+
+One of the reasons why finding articulation points might be useful is if the graph represents **depenencies** in a network or system. An edge from u to v means that v is dependent on u in the supply chain. An articulation point could then be considered a vulerability in that system because multiple trees are built from it. In this sense, it would mean that any node in the subtrees DEPEND on that articulation point. This could then idenfity a vulnerability in the system because if that point in the supply chain gets compromised, the supply chain will break. A real world example of this would be the strait of Gibraltar. When a boat got stuck there it shut down lots of supply chains worldwide.
+
+#### **Network Data Transfer Example**
+
+Another application for finding articulation points would be to identify bottle necks in certain systems of data transfer. This could be an ethernet cable network. If you have a network that transfers an item where 1 edge has a sort of maximum transfer rate (max bits per second), it could be useful to identify these articulation points because they could be bottle necking your whole internet system. This would make a lot of sense in the context of cloud infrastructure if you were worried about 1 handling so many requests from most of the world. Identifying these can help you get rid of the articulation point or reinforce the point so it can handle for traffic.
 
 ## Stretch 2
 
