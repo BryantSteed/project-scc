@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from _runtimes import runtimes
+import math
 
 
 def compute_coefficient(observed_performance, theoretical_order):
@@ -10,12 +11,12 @@ def compute_coefficient(observed_performance, theoretical_order):
 
 def main():
     def theoretical_big_o(v, e):
-        return v + e
+        return (v * math.log2(v)) + e
 
     coeffs = compute_coefficient(runtimes, theoretical_big_o)
 
     # slice this list to use a subset for your estimate
-    used_coeffs = coeffs[0:]
+    used_coeffs = coeffs[:]
 
     coeff = sum(used_coeffs) / len(used_coeffs)
     print(coeff)

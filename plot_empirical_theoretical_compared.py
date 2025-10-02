@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import math
 
 # Run scc.py to populate the runtimes
 from _runtimes import runtimes
@@ -7,10 +8,10 @@ from _runtimes import runtimes
 def main():
     # Define this
     def theoretical_big_o(v, e):
-        return 1
+        return (v * math.log2(v)) + e
 
     # Fill in from result using compute_coefficient
-    coeff = 1
+    coeff = 9.450600704527193e-07
 
     vv = [v for _, _, v, _, _ in runtimes]
     ee = [e for _, _, _, e, _ in runtimes]
@@ -37,7 +38,7 @@ def main():
     )
 
     # Update title, legend, and axis labels as needed
-    ax.legend(['Observed', 'Theoretical O(n^1.8)'])
+    ax.legend(['Observed', 'Theoretical O(V log V + E)'])
     ax.set_xlabel('|V|')
     ax.set_ylabel('|E|')
     ax.set_zlabel('Runtime')

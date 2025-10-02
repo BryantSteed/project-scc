@@ -175,16 +175,18 @@ In final consideration. I add up all the constituent time complexities, recogniz
 ### Comparison of Theoretical and Empirical Results
 
 - Theoretical order of growth: **O(V + E)** 
-- Measured constant of proportionality for theoretical order: 
+- Measured constant of proportionality for theoretical order: 4.858024426767237e-07
 
-![img](img.png)
+![img](prepost_theoretical_constants.png)
 
-- Empirical order of growth (if different from theoretical): 
+- Empirical order of growth (if different from theoretical): It's the same, O(V + E)
 
-![img](img.png)
+![img](prepost_empirical.svg)
 
 
-*Fill me in*
+Note that the label here is incorrect, **it should say O(V + E) for the theoretical**. Note that the theoretical constant and the empirical constant were the same. As you can see, my theoretical almost perfectly aligns with the empirical data. In the bar graph of constants, you can see that the curve is substantially flat, which indicates that O(V + E) is the correct order in this situation.
+
+Also, in the plot of runtimes, you can also see that the observed points miror the theoretical almost perfectly. This went exactly according to plan just as I predicted. Noise in the graph could be attributable to temporary modifications in the runtime due to random performance mishaps. Another reason could be that when appending to a list, the underlying data structure often has to allocated a new array space in memory (at least that's how c++ vectors work) and copy everything over.
 
 ## Core
 
@@ -200,7 +202,7 @@ After running prepost on the reverse graph, I will iterate through the pre post 
 
 #### Time 
 
-##### find_sccs - **O(V log V)**
+##### find_sccs - **O(V log V + E)**
 
 ```py
 def find_sccs(graph: GRAPH) -> list[set[str]]:
@@ -265,7 +267,7 @@ def get_reverse_graph(graph: GRAPH):
 
 There's nothing special about this hear, you effectively iterate through each edge and reverse it, which is constant. So this fucntion is just O(E)
 
-Adding up all the functions in order O(3V + 4E + V log V + 1) = O(V log V). The main overhead here is sorting all the vertices.
+Adding up all the functions in order O(3V + 4E + V log V + 1) = **O(V log V + E)**. The main overhead here is sorting all the vertices.
 
 #### Space
 
@@ -339,55 +341,66 @@ So, I conclude that finding the sccs is **O(V + E)** space.
 
 ### Empirical Data
 
-| size  | density factor | V+E | runtime |
-|-------|----------------|-----|---------|
-| 10    | 0.25           |     |         |
-| 20    | 0.25           |     |         |
-| 100   | 0.25           |     |         |
-| 200   | 0.25           |     |         |
-| 1000  | 0.25           |     |         |
-| 2000  | 0.25           |     |         |
-| 10000 | 0.25           |     |         |
-| 10    | 0.5            |     |         |
-| 20    | 0.5            |     |         |
-| 100   | 0.5            |     |         |
-| 200   | 0.5            |     |         |
-| 1000  | 0.5            |     |         |
-| 2000  | 0.5            |     |         |
-| 10000 | 0.5            |     |         |
-| 10    | 1              |     |         |
-| 20    | 1              |     |         |
-| 100   | 1              |     |         |
-| 200   | 1              |     |         |
-| 1000  | 1              |     |         |
-| 2000  | 1              |     |         |
-| 10000 | 1              |     |         |
-| 10    | 2              |     |         |
-| 20    | 2              |     |         |
-| 100   | 2              |     |         |
-| 200   | 2              |     |         |
-| 1000  | 2              |     |         |
-| 2000  | 2              |     |         |
-| 10000 | 2              |     |         |
-| 10    | 3              |     |         |
-| 20    | 3              |     |         |
-| 100   | 3              |     |         |
-| 200   | 3              |     |         |
-| 1000  | 3              |     |         |
-| 2000  | 3              |     |         |
-| 10000 | 3              |     |         |
+| Density Factor | Size  |    V    |    E    | Time (sec) |
+| -------------- | ----- | ------- | ------- | ---------- |
+| 0.25           | 10    | 10.0    | 12.8    | 0.0        |
+| 0.25           | 50    | 50.0    | 61.6    | 0.0        |
+| 0.25           | 100   | 100.0   | 123.5   | 0.0        |
+| 0.25           | 500   | 500.0   | 616.1   | 0.001      |
+| 0.25           | 1000  | 1000.0  | 1242.3  | 0.003      |
+| 0.25           | 2000  | 2000.0  | 2496.5  | 0.006      |
+| 0.25           | 4000  | 4000.0  | 4982.6  | 0.013      |
+| 0.25           | 8000  | 8000.0  | 9967.0  | 0.028      |
+| 0.5            | 10    | 10.0    | 17.7    | 0.0        |
+| 0.5            | 50    | 50.0    | 85.2    | 0.0        |
+| 0.5            | 100   | 100.0   | 173.1   | 0.0        |
+| 0.5            | 500   | 500.0   | 872.2   | 0.002      |
+| 0.5            | 1000  | 1000.0  | 1770.4  | 0.003      |
+| 0.5            | 2000  | 2000.0  | 3551.4  | 0.006      |
+| 0.5            | 4000  | 4000.0  | 7147.2  | 0.014      |
+| 0.5            | 8000  | 8000.0  | 14361.9 | 0.029      |
+| 1              | 10    | 10.0    | 24.5    | 0.0        |
+| 1              | 50    | 50.0    | 134.1   | 0.0        |
+| 1              | 100   | 100.0   | 272.5   | 0.0        |
+| 1              | 500   | 500.0   | 1429.5  | 0.002      |
+| 1              | 1000  | 1000.0  | 2921.5  | 0.004      |
+| 1              | 2000  | 2000.0  | 5928.1  | 0.007      |
+| 1              | 4000  | 4000.0  | 12010.6 | 0.015      |
+| 1              | 8000  | 8000.0  | 24327.1 | 0.035      |
+| 2              | 10    | 10.0    | 36.1    | 0.0        |
+| 2              | 50    | 50.0    | 239.4   | 0.001      |
+| 2              | 100   | 100.0   | 499.2   | 0.001      |
+| 2              | 500   | 500.0   | 2710.2  | 0.002      |
+| 2              | 1000  | 1000.0  | 5589.5  | 0.006      |
+| 2              | 2000  | 2000.0  | 11450.9 | 0.012      |
+| 2              | 4000  | 4000.0  | 23462.8 | 0.024      |
+| 2              | 8000  | 8000.0  | 47740.4 | 0.057      |
+| 3              | 10    | 10.0    | 46.0    | 0.0        |
+| 3              | 50    | 50.0    | 356.9   | 0.0        |
+| 3              | 100   | 100.0   | 766.3   | 0.001      |
+| 3              | 500   | 500.0   | 4321.3  | 0.004      |
+| 3              | 1000  | 1000.0  | 8788.2  | 0.007      |
+| 3              | 2000  | 2000.0  | 17810.6 | 0.014      |
+| 3              | 4000  | 4000.0  | 36212.5 | 0.032      |
+| 3              | 8000  | 8000.0  | 73442.4 | 0.07       |
 
 
 ### Comparison of Theoretical and Empirical Results
 
-- Theoretical order of growth: *copy from section above* 
-- Measured constant of proportionality for theoretical order: 
-- Empirical order of growth (if different from theoretical): 
-- Measured constant of proportionality for empirical order: 
+- Theoretical order of growth: **O(V log V + E)**
+- Measured constant of proportionality for theoretical order: 9.450600704527193e-07
+- Empirical order of growth (if different from theoretical): still **O(V log V + E)**
+- Measured constant of proportionality for empirical order: same - 9.450600704527193e-07
 
-![img](img.png)
+![img](find_sccs_theoretical_constants.png)
 
-*Fill me in*
+As you can see, we had some major outliers in the data with the constants here. I didn't subset the constants to get a different estiamte because I considered the outlier to be a legitimate datapoint.
+
+![img](find_sccs_empirical.svg)
+
+In this graph of the theoretical vs the observed, you can see that my theoretical still nearly perfectly estimated the empirical. This went just as I predicted. It's still important to note that the constant data had a lot of noise which prevented you from seeing that most of the constants were actually quite similar. The main piece of noise were outliers. However, as seen here, those outliers were insufficient to provide enough noise to deviate from the theoretial order.
+
+I think that the noise in the data could be to random background processes occuring in my computer. Running it on my computer to get runtime isn't the best analysis because my computer state changes over time, which could have an impact on the performance. I suspect that at a given moment, the processor just didn't schedule for the computations of this program in that given mircrosecond for whatever reason.
 
 ## Stretch 1
 
