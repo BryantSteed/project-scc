@@ -8,10 +8,10 @@ from _runtimes import runtimes
 def main():
     # Define this
     def theoretical_big_o(v, e):
-        return (v * math.log2(v)) + e
+        return v + e
 
     # Fill in from result using compute_coefficient
-    coeff = 9.450600704527193e-07
+    coeff = 3.844696451609654e-07
 
     vv = [v for _, _, v, _, _ in runtimes]
     ee = [e for _, _, _, e, _ in runtimes]
@@ -38,7 +38,7 @@ def main():
     )
 
     # Update title, legend, and axis labels as needed
-    ax.legend(['Observed', 'Theoretical O(V log V + E)'])
+    ax.legend(['Observed', 'Theoretical O(V + E)'])
     ax.set_xlabel('|V|')
     ax.set_ylabel('|E|')
     ax.set_zlabel('Runtime')

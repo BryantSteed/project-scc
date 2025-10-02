@@ -181,7 +181,7 @@ In final consideration. I add up all the constituent time complexities, recogniz
 
 - Empirical order of growth (if different from theoretical): It's the same, O(V + E)
 
-![img](prepost_empirical.svg)
+![img](prepost_empirical2.svg)
 
 
 Note that the label here is incorrect, **it should say O(V + E) for the theoretical**. Note that the theoretical constant and the empirical constant were the same. As you can see, my theoretical almost perfectly aligns with the empirical data. In the bar graph of constants, you can see that the curve is substantially flat, which indicates that O(V + E) is the correct order in this situation.
@@ -418,7 +418,7 @@ An articulation point on a graph that bisects different sub trees of the dfs tre
 
 #### **Supply Chain Dependency Graph Example**
 
-One of the reasons why finding articulation points might be useful is if the graph represents **depenencies** in a network or system. An edge from u to v means that v is dependent on u in the supply chain. An articulation point could then be considered a vulerability in that system because multiple trees are built from it. In this sense, it would mean that any node in the subtrees DEPEND on that articulation point. This could then idenfity a vulnerability in the system because if that point in the supply chain gets compromised, the supply chain will break. A real world example of this would be the strait of Gibraltar. When a boat got stuck there it shut down lots of supply chains worldwide.
+One of the reasons why finding articulation points might be useful is if the graph represents **dependencies** in a network or system. An edge from u to v means that v is dependent on u in the supply chain. An articulation point could then be considered a vulerability in that system because multiple trees are built from it. In this sense, it would mean that any node in the subtrees DEPEND on that articulation point. This could then idenfity a vulnerability in the system because if that point in the supply chain gets compromised, the supply chain will break. A real world example of this would be the strait of Gibraltar. When a boat got stuck there it shut down lots of supply chains worldwide.
 
 #### **Network Data Transfer Example**
 
@@ -430,19 +430,35 @@ Another application for finding articulation points would be to identify bottle 
 
 Adam Eubanks and Blake Calkins on 9/29/2025
 
+We talked about how to parse the dataset and how to implement the necessary strongly connected component analysis on it.
+
 I found a dataset from a harvard study that has supreme court decisions and how often they have cited eachother. They said in their readme that the data took a long time to collect. It has like 30,288 supreme court decisions in it. This is the link to it https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/XMBQL6. There are hundreds of thousands of edges here, and they give the whole adjacency list in allcites.txt. 
+
+### Dataset Description
 
 An edge from case1 -> case2 means that case1 has cited case2 in their opinion. This also means that its imposible for cases to cite eachother. I dont think that the strongly connected components will be very big because you cant have a previous case cite a case that happens after. This will be interesting to see if any cycles do actually exist in the data set. If I get any SCCS of more than one node, that would be very interesting. But my guess is that this dataset is a true DAG.
 
 I may need to adapt the dataset and make it smaller for my algorithm because its really big. The whole folder is like 100MB, so I don't know how my computer will be able to handle that. As far as me interpreting my results, if the data shows that its not a DAG, it would show that the data is incorrect or has some discrepancy. Or it could show that time travel was possible in the 1800's (quite the finding on its own).
 
-### Dataset Description
-
-*Fill me in*
-
 ### Findings Discussion
 
-*Fill me in*
+Here are my finding:
+
+Graph has 25417 nodes and 216738 edges
+Density factor: 8.527285
+Found 25138 SCCs, average size 1.01
+Found 224 non-trivial SCCs
+Average non-trivial SCC size 2.25
+Largest SCC size 5
+Example largest SCC case: ['24946', '24949', '24950', '24948', '24947']
+
+Not surprisingly, the vast majority of all SCCs were trivial. However, it is surprising that there actually were non-trivial (non size 1) sccs in this graph. In fact there were 224 non-trivial sccs! This indicates that there were at least 224 cases that were recorded as having an earlier chronological case number than the one that they cited. In fact, becase the average nontrivial size was 2.25, it means that 504 cases out of 25417 were in a strongly connected component.
+
+I was mostly joking about time travel. Another explanation can be seen from the example that shows the nodes of the largest SCC in the dataset. It has case numbers 24946, 24947, 24948, 24949, 24950. The fact that these case number are literally in succession from eachother indicates that they were likely released at essentially the same time. It's possible that the way the data was collected simply ordered the cases randomly if they were released on the same day.
+
+The fact is that if the supreme court happened to release this group of 5 cases (or similar group) on the same day that happened to cite eachother, there would be the possibility of an SCC. It's also plausible that if the court was working on similar cases, they might have decided one case before the other and chose to cite it in their opinion before the case was actaully oficially released to the public. The other option is that Supreme Court justices have access to their colleagues opinion, so the case number order as we see it may not be completely chronological in those cases.
+
+It is interesting to see that there were about 8.5 more citations of cases than there were cases themselves. It informs us that the process of judicial making relies heavily on precedent. We don't learn a lot from the non-trivial SCCs themselves other than the fact that when cases are released, the order may not be perfect.
 
 ## Project Review
 
