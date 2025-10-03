@@ -6,7 +6,7 @@
 
 Adam Eubanks and Blake Calkins on 9/29/2025
 
-For prepost, which returns the pre and post order numbers of every node in its contituent tree map, I will define a function that iterates through the graph and calls the recursive function explore on each one; the same way that the psuedocode works. Because python dictionaries preserve insertion order, I will make another dictionary to keep track of whether they've been visited, the key will be the string of the node in the dictionary and the value a bool variable.
+For prepost, which returns the pre and post order numbers of every node in its constituent tree map, I will define a function that iterates through the graph and calls the recursive function explore on each one; the same way that the pseudocode works. Because python dictionaries preserve insertion order, I will make another dictionary to keep track of whether they've been visited, the key will be the string of the node in the dictionary and the value a bool variable.
 
 With that, I will simply store the pre and post order numbers in the dictionary that I will eventually return.
 
@@ -106,7 +106,7 @@ def prepost(graph: GRAPH) -> list[dict[str, list[int]]]:
     return trees
 ```
 
-The graph here takes up O(V + E) space because it stores V vertices as keys and E edges as values. The visited set at the end store V vertices for O(V). Any local variables from the for loop are garbage collected each iteration such that they dont accumulate. Each tree has a maximum of V vertices for O(V). This is also the case with the list of trees because the trees partition that list.
+The graph here takes up O(V + E) space because it stores V vertices as keys and E edges as values. The visited set at the end store V vertices for O(V). Any local variables from the for loop are garbage collected each iteration such that they don't accumulate. Each tree has a maximum of V vertices for O(V). This is also the case with the list of trees because the trees partition that list.
 
 ```py
 def explore_tree(graph, visited, sort_func, tree, node, order_counter):
@@ -186,7 +186,7 @@ In final consideration. I add up all the constituent time complexities, recogniz
 
 Note that the label here is incorrect, **it should say O(V + E) for the theoretical**. Note that the theoretical constant and the empirical constant were the same. As you can see, my theoretical almost perfectly aligns with the empirical data. In the bar graph of constants, you can see that the curve is substantially flat, which indicates that O(V + E) is the correct order in this situation.
 
-Also, in the plot of runtimes, you can also see that the observed points miror the theoretical almost perfectly. This went exactly according to plan just as I predicted. Noise in the graph could be attributable to temporary modifications in the runtime due to random performance mishaps. Another reason could be that when appending to a list, the underlying data structure often has to allocated a new array space in memory (at least that's how c++ vectors work) and copy everything over.
+Also, in the plot of runtimes, you can also see that the observed points mirror the theoretical almost perfectly. This went exactly according to plan just as I predicted. Noise in the graph could be attributable to temporary modifications in the runtime due to random performance mishaps. Another reason could be that when appending to a list, the underlying data structure often has to allocated a new array space in memory (at least that's how c++ vectors work) and copy everything over.
 
 ## Core
 
@@ -196,7 +196,7 @@ Adam Eubanks and Blake Calkins on 9/29/2025
 
 I will reverse the graph given to me by iterating through the adjacency list and setting each edge that is connected to by another node to be connected to by that respective node. I will do this by iterating through the graph and creating another graph to do this during the iteration.
 
-After running prepost on the reverse graph, I will iterate through the pre post trees and sort them based on their post order number. Then, I will run interate in the decreasing post order numbr order and run explore succesively, popping out each SCC and adding each SCC set to the list. I will then return that list.
+After running prepost on the reverse graph, I will iterate through the pre post trees and sort them based on their post order number. Then, I will run iterate in the decreasing post order number order and run explore successively, popping out each SCC and adding each SCC set to the list. I will then return that list.
 
 ### Theoretical Analysis - SCC
 
@@ -224,7 +224,7 @@ def find_sccs(graph: GRAPH) -> list[set[str]]:
     return sccs
 ```
 
-I'll comentate on the section below. The top level for loop here iterates a maximum of V times, but as in prepost, this is misleading because it doesn't do hardly any computation. In reality, it only will call explore primitive a maximum of V times if all the components are strongly connected. Because of this, the loop itself gets an O(V). In terms of this, that whole lower section would be O(V + E) becase its effetively the same as the prepost traversal.
+I'll commentate on the below section. The top level for loop here iterates a maximum of V times, but as in prepost, this is misleading because it doesn't do hardly any computation. In reality, it only will call explore primitive a maximum of V times if all the components are strongly connected. Because of this, the loop itself gets an O(V). In terms of this, that whole lower section would be O(V + E) because its effectively the same as the prepost traversal.
 
 
 ```py
@@ -265,7 +265,7 @@ def get_reverse_graph(graph: GRAPH):
     return reverse_graph
 ```
 
-There's nothing special about this hear, you effectively iterate through each edge and reverse it, which is constant. So this fucntion is just O(E)
+There's nothing special about this hear, you effectively iterate through each edge and reverse it, which is constant. So this function is just O(E)
 
 Adding up all the functions in order O(3V + 4E + V log V + 1) = **O(V log V + E)**. The main overhead here is sorting all the vertices.
 
@@ -308,7 +308,7 @@ def explore_primitive(graph, visited, sort_func, node, scc):
     return scc
 ```
 
-The data structures here are the same as in the other function so I wont include them becuase they're mutable. The only thing is the adjacents list which is O(E)
+The data structures here are the same as in the other function so I wont include them because they're mutable. The only thing is the adjacents list which is O(E)
 
 
 ```py
@@ -333,9 +333,9 @@ def get_reverse_graph(graph: GRAPH):
     return reverse_graph # already done above
 ```
 
-This is just the same as a regualar graph and I have done it in the above function.
+This is just the same as a regular graph and I have done it in the above function.
 
-The main data structure here is the graph itslef, which is O(V + E) because it stores V nodes and E edges. The rest is quite negligible and only as on constant factors to these.
+The main data structure here is the graph itself, which is O(V + E) because it stores V nodes and E edges. The rest is quite negligible and only as on constant factors to these.
 
 So, I conclude that finding the sccs is **O(V + E)** space.
 
@@ -394,13 +394,13 @@ So, I conclude that finding the sccs is **O(V + E)** space.
 
 ![img](find_sccs_theoretical_constants.png)
 
-As you can see, we had some major outliers in the data with the constants here. I didn't subset the constants to get a different estiamte because I considered the outlier to be a legitimate datapoint.
+As you can see, we had some major outliers in the data with the constants here. I didn't subset the constants to get a different estimate because I considered the outlier to be a legitimate datapoint.
 
 ![img](find_sccs_empirical.svg)
 
-In this graph of the theoretical vs the observed, you can see that my theoretical still nearly perfectly estimated the empirical. This went just as I predicted. It's still important to note that the constant data had a lot of noise which prevented you from seeing that most of the constants were actually quite similar. The main piece of noise were outliers. However, as seen here, those outliers were insufficient to provide enough noise to deviate from the theoretial order.
+In this graph of the theoretical vs the observed, you can see that my theoretical still nearly perfectly estimated the empirical. This went just as I predicted. It's still important to note that the constant data had a lot of noise which prevented you from seeing that most of the constants were actually quite similar. The main piece of noise were outliers. However, as seen here, those outliers were insufficient to provide enough noise to deviate from the theoretical order.
 
-I think that the noise in the data could be to random background processes occuring in my computer. Running it on my computer to get runtime isn't the best analysis because my computer state changes over time, which could have an impact on the performance. I suspect that at a given moment, the processor just didn't schedule for the computations of this program in that given mircrosecond for whatever reason.
+I think that the noise in the data could be to random background processes occurring in my computer. Running it on my computer to get runtime isn't the best analysis because my computer state changes over time, which could have an impact on the performance. I suspect that at a given moment, the processor just didn't schedule for the computations of this program in that given microsecond for whatever reason.
 
 ## Stretch 1
 
@@ -408,21 +408,21 @@ I think that the noise in the data could be to random background processes occur
 
 Adam Eubanks and Blake Calkins on 9/29/2025
 
-To identify the different types of edges, I will first run prepost on the graph. I will likely need to reorganize the tree data into a cohesive dictionary that will actually get me all the prepost numbers in one call. Then I will iterate through each edge in the graph by iterating through the key and invidually connections. For each of those edges, I will construct a list that orders the pre-post numbers in order and has the identity of the node it belongs to and whether that number is a pre or post order.
+To identify the different types of edges, I will first run prepost on the graph. I will likely need to reorganize the tree data into a cohesive dictionary that will actually get me all the prepost numbers in one call. Then I will iterate through each edge in the graph by iterating through the key and individually connections. For each of those edges, I will construct a list that orders the pre-post numbers in order and has the identity of the node it belongs to and whether that number is a pre or post order.
 
 I will then iterate through that list to determine if the pattern in [u[v v]u], in which case its tree/forward, [v[u u]v], in which case its back, or finally [v v] [u u], in which case it's cross.
 
 ### Articulation Points Discussion 
 
-An articulation point on a graph that bisects different sub trees of the dfs tree. It's the root of those subtrees. The important thing here is that there are no edges connecting the subtrees and there are forward edges that reach from before the point to after the point (into any of the subtrees). What this means is that in order to get to any node in either of the subtress, you MUST go through that articulation point. This has several applications.
+An articulation point on a graph that bisects different sub trees of the dfs tree. It's the root of those subtrees. The important thing here is that there are no edges connecting the subtrees and there are forward edges that reach from before the point to after the point (into any of the subtrees). What this means is that in order to get to any node in either of the subtrees, you MUST go through that articulation point. This has several applications.
 
 #### **Supply Chain Dependency Graph Example**
 
-One of the reasons why finding articulation points might be useful is if the graph represents **dependencies** in a network or system. An edge from u to v means that v is dependent on u in the supply chain. An articulation point could then be considered a vulerability in that system because multiple trees are built from it. In this sense, it would mean that any node in the subtrees DEPEND on that articulation point. This could then idenfity a vulnerability in the system because if that point in the supply chain gets compromised, the supply chain will break. A real world example of this would be the strait of Gibraltar. When a boat got stuck there it shut down lots of supply chains worldwide.
+One of the reasons why finding articulation points might be useful is if the graph represents **dependencies** in a network or system. An edge from u to v means that v is dependent on u in the supply chain. An articulation point could then be considered a vulnerability in that system because multiple trees are built from it. In this sense, it would mean that any node in the subtrees DEPEND on that articulation point. This could then identify a vulnerability in the system because if that point in the supply chain gets compromised, the supply chain will break. A real world example of this would be the strait of Gibraltar. When a boat got stuck there it shut down lots of supply chains worldwide.
 
 #### **Network Data Transfer Example**
 
-Another application for finding articulation points would be to identify bottle necks in certain systems of data transfer. This could be an ethernet cable network. If you have a network that transfers an item where 1 edge has a sort of maximum transfer rate (max bits per second), it could be useful to identify these articulation points because they could be bottle necking your whole internet system. This would make a lot of sense in the context of cloud infrastructure if you were worried about 1 handling so many requests from most of the world. Identifying these can help you get rid of the articulation point or reinforce the point so it can handle for traffic.
+Another application for finding articulation points would be to identify bottle necks in certain systems of data transfer. This means internet routers. This could be an ethernet cable network. If you have a network that transfers an item where 1 edge has a sort of maximum transfer rate (max bits per second), it could be useful to identify these articulation points because they could be bottle necking your whole internet system. This would make a lot of sense in the context of cloud infrastructure if you were worried about 1 handling so many requests from most of the world. Identifying these can help you get rid of the articulation point or reinforce the point so it can handle for traffic.
 
 ## Stretch 2
 
@@ -432,11 +432,11 @@ Adam Eubanks and Blake Calkins on 9/29/2025
 
 We talked about how to parse the dataset and how to implement the necessary strongly connected component analysis on it.
 
-I found a dataset from a harvard study that has supreme court decisions and how often they have cited eachother. They said in their readme that the data took a long time to collect. It has like 30,288 supreme court decisions in it. This is the link to it https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/XMBQL6. There are hundreds of thousands of edges here, and they give the whole adjacency list in allcites.txt. 
+I found a dataset from a harvard study that has supreme court decisions and how often they have cited each other. They said in their readme that the data took a long time to collect. It has like 30,288 supreme court decisions in it. This is the link to it https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/XMBQL6. There are hundreds of thousands of edges here, and they give the whole adjacency list in allcites.txt. 
 
 ### Dataset Description
 
-An edge from case1 -> case2 means that case1 has cited case2 in their opinion. This also means that its imposible for cases to cite eachother. I dont think that the strongly connected components will be very big because you cant have a previous case cite a case that happens after. This will be interesting to see if any cycles do actually exist in the data set. If I get any SCCS of more than one node, that would be very interesting. But my guess is that this dataset is a true DAG.
+An edge from case1 -> case2 means that case1 has cited case2 in their opinion. This also means that its impossible for cases to cite each other. I don't think that the strongly connected components will be very big because you cant have a previous case cite a case that happens after. This will be interesting to see if any cycles do actually exist in the data set. If I get any SCCS of more than one node, that would be very interesting. But my guess is that this dataset is a true DAG.
 
 I may need to adapt the dataset and make it smaller for my algorithm because its really big. The whole folder is like 100MB, so I don't know how my computer will be able to handle that. As far as me interpreting my results, if the data shows that its not a DAG, it would show that the data is incorrect or has some discrepancy. Or it could show that time travel was possible in the 1800's (quite the finding on its own).
 
@@ -445,21 +445,33 @@ I may need to adapt the dataset and make it smaller for my algorithm because its
 Here are my finding:
 
 Graph has 25417 nodes and 216738 edges
-Density factor: 8.527285
+Density factor: 8.527285 edges per node
 Found 25138 SCCs, average size 1.01
 Found 224 non-trivial SCCs
 Average non-trivial SCC size 2.25
 Largest SCC size 5
 Example largest SCC case: ['24946', '24949', '24950', '24948', '24947']
 
-Not surprisingly, the vast majority of all SCCs were trivial. However, it is surprising that there actually were non-trivial (non size 1) sccs in this graph. In fact there were 224 non-trivial sccs! This indicates that there were at least 224 cases that were recorded as having an earlier chronological case number than the one that they cited. In fact, becase the average nontrivial size was 2.25, it means that 504 cases out of 25417 were in a strongly connected component.
+Not surprisingly, the vast majority of all SCCs were trivial. However, it is surprising that there actually were non-trivial (non size 1) sccs in this graph. In fact there were 224 non-trivial sccs! This indicates that there were at least 224 cases that were recorded as having an earlier chronological case number than the one that they cited. In fact, because the average nontrivial size was 2.25, it means that 504 cases out of 25417 were in a strongly connected component.
 
-I was mostly joking about time travel. Another explanation can be seen from the example that shows the nodes of the largest SCC in the dataset. It has case numbers 24946, 24947, 24948, 24949, 24950. The fact that these case number are literally in succession from eachother indicates that they were likely released at essentially the same time. It's possible that the way the data was collected simply ordered the cases randomly if they were released on the same day.
+A source is a case that is not cited, and a sink is a case that is cited but does not cite any other cases.
 
-The fact is that if the supreme court happened to release this group of 5 cases (or similar group) on the same day that happened to cite eachother, there would be the possibility of an SCC. It's also plausible that if the court was working on similar cases, they might have decided one case before the other and chose to cite it in their opinion before the case was actaully oficially released to the public. The other option is that Supreme Court justices have access to their colleagues opinion, so the case number order as we see it may not be completely chronological in those cases.
+I was mostly joking about time travel. Another explanation can be seen from the example that shows the nodes of the largest SCC in the dataset. It has case numbers 24946, 24947, 24948, 24949, 24950. The fact that these case number are literally in succession from each other indicates that they were likely released at essentially the same time. It's possible that the way the data was collected simply ordered the cases randomly if they were released on the same day.
+
+The fact is that if the supreme court happened to release this group of 5 cases (or similar group) on the same day that happened to cite each other, there would be the possibility of an SCC. It's also plausible that if the court was working on similar cases, they might have decided one case before the other and chose to cite it in their opinion before the case was actually officially released to the public. The other option is that Supreme Court justices have access to their colleagues opinion, so the case number order as we see it may not be completely chronological in those cases.
 
 It is interesting to see that there were about 8.5 more citations of cases than there were cases themselves. It informs us that the process of judicial making relies heavily on precedent. We don't learn a lot from the non-trivial SCCs themselves other than the fact that when cases are released, the order may not be perfect.
 
 ## Project Review
 
-*Fill me in*
+I did the review with Katherine Mckinney and Spencer Zaugg on 10/2/2025.
+
+For baseline, we all had the same time complexities and had largely the same implementations.
+
+For core, she used a priority queue instead of using sorting and got O(V + E). Spencer also used sorting like me and got my same theoretical V log V + E for core.
+
+Spencer used hallways to get out of a building as his articulation point example. It's cool because you could identify a bottle neck when people would try to get out of a building.
+
+Spencer's dataset was the google link graph from 2002. It had like 800000 nodes and 5,000,000 edges! He got the json file and analyzed it. He had 371,764 sccs. The average scc was about 2 sccs. The largest SCC was 434,818 nodes in size! THis means that about half of the web is strongly connected.
+
+Katherine used a social network friend database. There were 950k edges and 82k nodes. 71k nodes were in one SCC. She found that there was one big SCC. 10k of the nodes were an SCC of just 1.
